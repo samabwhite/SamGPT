@@ -1,19 +1,15 @@
+# data_processing.py
 import pandas as pd
 
-def load_csv(filepath):
-    return pd.read_csv(filepath)
+def load_csv(path):
+    return pd.read_csv(path)
 
-def filter_data(df, columns_to_keep, filter_column_index, condition):
-    # Apply the condition to the filter column and get a boolean Series
+def filter_data(df, columns, filter_column_index, condition):
+    if not all(col in df.columns for col in columns):
+        raise ValueError(f"One or more columns: {columns} not found in the DataFrame")
+    
     mask = df.iloc[:, filter_column_index].apply(condition)
-    # Filter the DataFrame rows and select specific columns to keep
-    filtered_df = df[mask][columns_to_keep]
-    return filtered_df
+    return df.loc[mask, columns]
 
-def save_csv(df, filepath):
-    df.to_csv(filepath, index=False)
-
-def csv_to_text_array(df, column_name):
-    # Extract the specified column as a list of strings
-    text_array = df[column_name].tolist()
-    return text_array
+def csv_to_text_array(df, text_column):
+    return df[text_column].tolist()
