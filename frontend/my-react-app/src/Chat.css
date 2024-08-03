@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+}
+
+header {
+    background-color: #181818;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.Chat {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: #181818;
+}
+
+.logo {
+    height: 50px;
+}
+
+.github-link {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transform: translateX(-2rem);
+}
+
+.github-logo {
+    height: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.cs-main-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.cs-chat-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.cs-message-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.cs-message-input {
+    flex-shrink: 0;
+}
+
+.cs-main-container,
+.cs-chat-container .cs-message-input {
+    border: 0px;
+}
+
+.cs-message-list,
+.cs-typing-indicator {
+    background-color: #181818 !important;
+}
+
+.cs-message-input__content-editor,
+.cs-message-input__content-editor-wrapper,
+.cs-chat-container .cs-message-input,
+.ps__rail-y:hover,
+.ps .ps__rail-y:hover,
+.ps__rail-y,
+.cs-message--incoming .cs-message__content,
+.ps__thumb-y,
+.ps__rail-y:hover .ps__thumb-y,
+.ps__rail-y:active .ps__thumb-y {
+    background-color: #1F1F1F;
+    color: #CCCCCD;
+    text-align: left;
+}
+
+.cs-message--outgoing .cs-message__content {
+    background-color: #303030;
+    color: #CCCCCD;
+    text-align: right;
+}
+
+.cs-typing-indicator__dot {
+    background-color: #8C52FF;
+}
+
+.cs-message-list__typing-indicator-container div,
+.cs-button--send {
+    color: #8C52FF;
+}
+
+.cs-message-input__content-editor[data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: #6C6C6C;
+    pointer-events: none;
+    display: block;
+}
+
+body,
+#root,
+.logo,
+.card,
+.read-the-docs,
+.cs-main-container,
+.cs-chat-container,
+.cs-message-list,
+.cs-typing-indicator,
+.cs-message-input__content-editor,
+.cs-message-input__content-editor-wrapper,
+.cs-typing-indicator__text,
+.cs-message--outgoing .cs-message__content,
+.cs-message--outgoing .cs-message__content,
+.cs-button--send {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #181818;
+    margin: 0;
+}
