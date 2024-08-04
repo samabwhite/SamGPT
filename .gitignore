@@ -221,3 +221,4 @@ out/
 # Misc
 coverage/
 *.tsbuildinfo
+/src/config.js
