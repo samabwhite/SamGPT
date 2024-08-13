@@ -1,3 +1,5 @@
-import userRoutes from './user';
+import userRouter from './user.js';
+import sessionRouter from './session.js';
+import chatRouter from './chat.js';
 
-export { userRoutes };
+export { userRouter, sessionRouter , chatRouter};

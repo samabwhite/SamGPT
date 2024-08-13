@@ -4,8 +4,6 @@ from tokenizers import Tokenizer
 import json
 import model
 import torch.nn.functional as F
-# burst 5000
-# rate 10000
 
 def model_fn(model_dir):
     hyperparameters_path = os.path.join(model_dir, 'hyperparameters.json')
