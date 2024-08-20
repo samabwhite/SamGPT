@@ -1,16 +1,50 @@
-function Register() {
-    function signIn() {
-        return;
-    }
+import React from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { register } from "../actions/session";
 
+const mapStateToProps = ({ errors }) => ({
+    errors
+  });
+  const mapDispatchToProps = dispatch => ({
+    register: user => dispatch(register(user))
+  });
+
+  const Register = ({ errors, register }) => {
+    const handleSubmit = e => {
+      e.preventDefault();
+      const user = {
+        username: e.target[0].value,
+        email: e.target[1].value,
+        password: e.target[2].value
+      };
+      register(user);
+    };
     return (
-        <form action={signIn}>
-            <input type="text" name="username" id="username_input" placeholder="Name" minLength="2" maxLength="20" required/>
-            <input type="text" name="email" id="email_input" placeholder="Email" minLength="3" required/>
-            <input type="text" name="password" id="password_input" placeholder="Password" minLength="3" maxLength="20" required/>
-            <button type="submit">Submit</button>
+      <>
+        <h1>Register</h1>
+        <p>{errors}</p>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Username:
+            <input type="text" name="username" />
+          </label>
+          <label>
+            Email:
+            <input type="email" name="email" />
+          </label>
+          <label>
+            Password:
+            <input type="password" name="password" />
+          </label>
+          <input type="submit" value="Submit" />
         </form>
-    );
-}
+        <Link to="/signin">Sign In</Link>
+      </>
+      );
+    };
 
-export default Register;
+    export default connect(
+        mapStateToProps,
+        mapDispatchToProps
+      )(Register);

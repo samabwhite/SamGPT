@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
+import cors from 'cors';
 import { userRouter, sessionRouter, chatRouter } from './routes/index.js';
 import { PORT, NODE_ENV, MONGO_URI, SESS_NAME, SESS_SECRET, SESS_LIFETIME } from './config.js';
 
@@ -18,6 +19,10 @@ mongoose.set('strictQuery', true);
 
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
+    app.use(cors({
+      origin: 'http://localhost:3000',
+      credentials: true
+    }));
 
     const store = connectMongo.create({
       client: mongoose.connection.getClient(),

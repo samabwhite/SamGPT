@@ -5,11 +5,22 @@ import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
 
-function Chat() {
+import { connect } from "react-redux";
+import { logout } from "../actions/session";
+
+const mapStateToProps = ({ session }) => ({
+  session
+});
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout())
+});
+
+function Chat({ session, logout }) {
     const [typing, setTyping] = useState(false);
     const [messages, setMessages] = useState([
         {
-            message: "Hi, I'm SamGPT! I'm a pretty useless model that is practically a random word generator. I am a homemade model trained on Sam's PC with the SciQ dataset. I'm currently living in a AWS SageMaker server. Ask me anything!",
+            message: "Hi, I'm SamGPT! I'm a pretty useless model that is practically a random word generator. I am a homemade model trained on Sam's PC with the SciQ dataset. I'm currently living in an AWS SageMaker server. Ask me anything!",
             sender: "SamGPT",
             direction: "incoming"
         }
@@ -69,6 +80,7 @@ function Chat() {
                 <a href="https://github.com/samabwhite/SamGPT" target="_blank" rel="noopener noreferrer" className="github-link">
                     <img src={githubLogo} alt="GitHub" className="github-logo" />
                 </a>
+                <button onClick={logout} className="logout-button">Logout</button> {/* Add Logout Button */}
             </div>
             <div className="chat-container">
                 <MainContainer>
@@ -86,4 +98,7 @@ function Chat() {
     );
 }
 
-export default Chat;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Chat);
