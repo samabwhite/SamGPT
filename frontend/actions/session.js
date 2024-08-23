@@ -52,8 +52,7 @@ export const register = user => async dispatch => {
 export const logout = () => async dispatch => {
     try {
         const response = await apiUtil.logout();
-        
-        if (response.ok) {
+        if (response.ok || response.status === 422) {
             return dispatch(logoutCurrentUser());
         } else {
             const data = await response.json();
@@ -63,3 +62,18 @@ export const logout = () => async dispatch => {
         return dispatch(receiveSessionErrors([error.message || 'An unexpected error occurred during logout']));
     }
 };
+
+export const checkSessionValidity = () => async dispatch => {
+    try {
+      const response = await apiUtil.session(); 
+      if (response.ok) {
+        const raw = await response.json();
+        const data = raw.user;
+        return dispatch(receiveCurrentUser(data));
+      } else {
+        throw new Error('Session invalid');
+      }
+    } catch (error) {
+      dispatch(logout());
+    }
+  };

@@ -25,7 +25,6 @@ export const getChat = user => async dispatch => {
     try {
         const response = await apiUtil.getChat(user);
         const data = await response.json();
-
         if (response.ok) {
             return dispatch(receiveChat(data));
         } else {

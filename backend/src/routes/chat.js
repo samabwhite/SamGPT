@@ -9,6 +9,7 @@ const chatRouter = express.Router();
 
 // Get all conversations
 chatRouter.get("", async (req, res) => {
+    console.log("Begin receiving conversations");
     try {
         const { user } = req.session;
         if (user) {

@@ -30,15 +30,16 @@ sessionRouter.post("", async (req, res) => {
 sessionRouter.delete("", ({ session }, res) => {
     try {
         const user = session.user;
+        
+        res.clearCookie(SESS_NAME);
+        
         if (user) {
             session.destroy(err => {
                 if (err) throw (err);
-
-                res.clearCookie(SESS_NAME);
                 res.send(user);
             });
         } else {
-            throw new Error("Something went wrong, try again")
+            res.send({ message: "Session not found, but cookie cleared" });
         }
     } catch (err) {
         res.status(422).send(parseError(err));

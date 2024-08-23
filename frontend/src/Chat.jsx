@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
@@ -25,6 +25,7 @@ function Chat({ session, logout }) {
             direction: "incoming"
         }
     ]);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const handleSend = async (message) => {
         const newMessage = {
@@ -69,21 +70,42 @@ function Chat({ session, logout }) {
 
         const data = await response.json();
         const generated_text = data['generated_text'];
-        console.log('API Response:', generated_text);
         return generated_text;
     }
 
     return (
         <div className="Chat">
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
             <div className="header">
                 <img src={logo} alt="Logo" className="logo" />
                 <a href="https://github.com/samabwhite/SamGPT" target="_blank" rel="noopener noreferrer" className="github-link">
                     <img src={githubLogo} alt="GitHub" className="github-logo" />
                 </a>
-                <button onClick={logout} className="logout-button">Logout</button> {/* Add Logout Button */}
+                <button onClick={logout} className="logout-button">Logout</button>
             </div>
             <div className="chat-container">
                 <MainContainer>
+                    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+                        <button className="collapse-button" onClick={() => setIsCollapsed(!isCollapsed)}>
+                            {isCollapsed ? (
+                                <span className="material-icons sp-icon-open">keyboard_double_arrow_right</span>
+                            ) : (
+                                <span className="material-icons sp-icon-close">keyboard_double_arrow_left</span>
+                            )}
+                        </button>
+                        <ConversationList className="cs-conversation-list">
+                            <Conversation
+                                info="Yes i can do it for you"
+                                lastSenderName="Lilly"
+                                name="Lilly"
+                            />
+                            <Conversation
+                                info="Yes i can do it for you"
+                                lastSenderName="Joe"
+                                name="Joe"
+                            />
+                        </ConversationList>
+                    </div>
                     <ChatContainer>
                         <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
                             {messages.map((message, i) => (
