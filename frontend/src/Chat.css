@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-
 * {
     font-family: 'Roboto', sans-serif;
 }
@@ -64,9 +63,12 @@ main {
 
 .github-link {
     position: absolute;
-    top: 1rem;
+    top: 50%;
     right: 1rem;
-    transform: translateX(-2rem);
+    transform: translateY(-50%) translateX(-2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .github-logo {
@@ -110,9 +112,14 @@ main {
     flex-shrink: 0;
 }
 
-.cs-main-container,
-.cs-chat-container .cs-message-input {
+.cs-main-container {
     border: 0px;
+}
+
+.cs-chat-container .cs-message-input {
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: #292929;
 }
 
 .cs-message-list,
@@ -191,7 +198,7 @@ body {
 }
 
 .cs-main-container {
-    flex-direction: row
+    flex-direction: row;
 }
 
 .cs-conversation {
@@ -225,18 +232,24 @@ body {
 }
 
 .collapsed {
-    width: 50px;
+    width: 70px;
 }
 
-.collapse-button {
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.collapse-button,
+.new-conversation-button {
     background-color: #1F1F1F;
     color: #CCCCCD;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     margin: 0.5rem;
-    align-self: flex-end;
-    transition: transform 0.3s;
     width: 40px; 
     height: 40px;
     display: flex; 
@@ -245,12 +258,14 @@ body {
 }
 
 .collapse-button:hover,
+.new-conversation-button:hover,
 .logout-button:hover {
     background-color: #8C52FF;
 }
 
 .sp-icon-open,
-.sp-icon-close {
+.sp-icon-close,
+.material-icons {
     font-size: 24px;
 }
 
@@ -261,4 +276,41 @@ body {
 
 .collapsed .cs-conversation-list {
     display: none;
+}
+
+
+@media (max-width: 600px) {
+    .header {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .github-link {
+        transform: translateX(-1rem) translateY(-50%); 
+    }
+
+    .logout-button {
+        left: 0.5rem; 
+    }
+
+    .logo {
+        height: 35px; 
+    }
+
+    .github-logo {
+        height: 24px; 
+    }
+
+    .collapse-button,
+    .new-conversation-button {
+        width: 35px; 
+        height: 35px;
+        margin: 0.25rem;
+    }
+
+    .sp-icon-open,
+    .sp-icon-close,
+    .material-icons {
+        font-size: 20px; 
+    }
 }

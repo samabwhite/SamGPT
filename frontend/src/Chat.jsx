@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
@@ -7,71 +7,112 @@ import githubLogo from './assets/github.png';
 
 import { connect } from "react-redux";
 import { logout } from "../actions/session";
+import { getChat, sendMessage, addConversation } from '../actions/chat.js';
 
-const mapStateToProps = ({ session }) => ({
-  session
+const mapStateToProps = ({ session, chat }) => ({
+  session,
+  conversations: chat.conversations || []  
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    getChat: () => dispatch(getChat()),
+    sendMessage: (user, conversationId, message, initMessage) => 
+        dispatch(sendMessage(user, conversationId, message, initMessage)),
+    addConversation: (conversation) => dispatch(addConversation(conversation))
 });
 
-function Chat({ session, logout }) {
+
+function Chat({ session, conversations, logout, getChat, sendMessage, addConversation }) {
     const [typing, setTyping] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            message: "Hi, I'm SamGPT! I'm a pretty useless model that is practically a random word generator. I am a homemade model trained on Sam's PC with the SciQ dataset. I'm currently living in an AWS SageMaker server. Ask me anything!",
-            sender: "SamGPT",
-            direction: "incoming"
+    const [currentConversation, setCurrentConversation] = useState(null);
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
+    useEffect(() => {
+        if (!currentConversation && conversations.length > 0) {
+            setCurrentConversation(conversations[conversations.length - 1]);
+        } else if (conversations.length == 0) {
+            handleNewConversation();
         }
-    ]);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    }, [conversations]);
 
     const handleSend = async (message) => {
+        if (!currentConversation) return;
+        
         const newMessage = {
             message: message,
             sender: "user",
-            direction: "outgoing"
+            direction: "outgoing",
+            timestamp: new Date() 
+        };
+        
+        const updatedMessages = [...currentConversation.messages, newMessage];
+        
+        const updatedConversation = { 
+            ...currentConversation, 
+            messages: updatedMessages,
+            updatedAt: new Date() 
         };
 
-        const newMessages = [...messages, newMessage];
-
-        setMessages(newMessages);
-
+        setCurrentConversation(updatedConversation);
+        
+        addConversation(updatedConversation);
+        
         setTyping(true);
-
-        const response = await sendMessageToBackend(message);
+        
+        const initMessage = currentConversation.messages.length === 1 ? currentConversation.messages[0] : null; 
+        
+        const response = await sendMessage(session, currentConversation.conversationId, newMessage, initMessage);
+        
         const responseMessage = {
-            message: response,
+            message: response.message.message,
             sender: "SamGPT",
-            direction: "incoming"
+            direction: "incoming",
+            timestamp: new Date() 
         };
-
-        setMessages([...newMessages, responseMessage]);
+        
+        const finalMessages = [...updatedMessages, responseMessage];
+        
+        const finalConversation = { 
+            ...updatedConversation, 
+            messages: finalMessages,
+            updatedAt: new Date() 
+        };
+        
+        setCurrentConversation(finalConversation);
+        
+        addConversation(finalConversation);
+        
         setTyping(false);
     };
+    
+    
 
-    async function sendMessageToBackend(message) {
-        const apiRequestBody = {
-            data: message
+
+    const handleNewConversation = () => {
+        const newConversationId = conversations.length + 1; 
+        const newConversation = {
+            conversationId: newConversationId,
+            messages: [{
+                message: "Hi, I'm SamGPT! Start a conversation.",
+                sender: "SamGPT",
+                direction: "incoming"
+            }]
         };
 
-        const response = await fetch(process.env.REACT_APP_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(apiRequestBody)
-        });
+        conversations.push(newConversation);
+        setCurrentConversation(newConversation);
+    };
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    const memoizedGetChat = useCallback(() => {
+        if (session.userId) {
+            getChat();
         }
+    }, [session.userId, getChat]);
 
-        const data = await response.json();
-        const generated_text = data['generated_text'];
-        return generated_text;
-    }
+    useEffect(() => {
+        memoizedGetChat();
+    }, [memoizedGetChat]);
 
     return (
         <div className="Chat">
@@ -86,6 +127,10 @@ function Chat({ session, logout }) {
             <div className="chat-container">
                 <MainContainer>
                     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+                    <div className="button-container">
+                        <button onClick={handleNewConversation} className="new-conversation-button">
+                            <span className="material-icons">add</span>
+                        </button>
                         <button className="collapse-button" onClick={() => setIsCollapsed(!isCollapsed)}>
                             {isCollapsed ? (
                                 <span className="material-icons sp-icon-open">keyboard_double_arrow_right</span>
@@ -93,22 +138,24 @@ function Chat({ session, logout }) {
                                 <span className="material-icons sp-icon-close">keyboard_double_arrow_left</span>
                             )}
                         </button>
+                    </div>
                         <ConversationList className="cs-conversation-list">
-                            <Conversation
-                                info="Yes i can do it for you"
-                                lastSenderName="Lilly"
-                                name="Lilly"
-                            />
-                            <Conversation
-                                info="Yes i can do it for you"
-                                lastSenderName="Joe"
-                                name="Joe"
-                            />
+                            {conversations.map((conversation, index) => (
+                                <Conversation
+                                    key={index}
+                                    name={`Conversation ${index + 1}`}
+                                    info={conversation.messages[conversation.messages.length - 1]?.message || 'No messages yet'}
+                                    lastSenderName={conversation.messages[conversation.messages.length - 1]?.sender || 'Unknown'}
+                                    onClick={() => {
+                                        setCurrentConversation(conversation);
+                                    }}
+                                />
+                            ))}
                         </ConversationList>
                     </div>
                     <ChatContainer>
                         <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
-                            {messages.map((message, i) => (
+                            {currentConversation?.messages.map((message, i) => (
                                 <Message key={i} model={message} />
                             ))}
                         </MessageList>

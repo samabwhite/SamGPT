@@ -1,10 +1,10 @@
-export const getChat = user => (
+export const getChat = () => (
     fetch("api/chat", {
         method: "GET",
-        body: JSON.stringify(user),
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        credentials: "include"
     })
 );
 

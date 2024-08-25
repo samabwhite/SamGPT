@@ -1,11 +1,12 @@
 import {
     RECEIVE_CHAT,
     RECEIVE_NEW_MESSAGE,
-    RECEIVE_CHAT_ERRORS
-  } from "../../actions/chat.js";
+    RECEIVE_CHAT_ERRORS,
+    UPDATE_CONVERSATION
+} from "../../actions/chat.js";
 
 const initialState = {
-    chat: null,
+    conversations: [],  
     errors: [],
     messages: []
 };
@@ -15,7 +16,7 @@ export default (state = initialState, action) => {
         case RECEIVE_CHAT:
             return {
                 ...state,
-                chat: action.chat,
+                conversations: action.chat.conversations || [],  
                 errors: []
             };
         case RECEIVE_NEW_MESSAGE:
@@ -28,6 +29,14 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 errors: action.errors
+            };
+        case UPDATE_CONVERSATION: 
+            const updatedConversations = state.conversations.map(convo =>
+                convo.conversationId === action.conversation.conversationId ? action.conversation : convo
+            );
+            return {
+                ...state,
+                conversations: updatedConversations
             };
         default:
             return state;
