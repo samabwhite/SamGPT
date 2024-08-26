@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { logout } from "../actions/session";
 import { getChat, sendMessage, addConversation } from '../actions/chat.js';
 
+
 const mapStateToProps = ({ session, chat }) => ({
   session,
   conversations: chat.conversations || []  
@@ -28,6 +29,19 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
     const [typing, setTyping] = useState(false);
     const [currentConversation, setCurrentConversation] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
+
+    useEffect(() => {
+        const hasSeenPopup = sessionStorage.getItem('hasSeenPopup');
+        if (!hasSeenPopup) {
+            setShowPopup(true);
+        }
+    }, []);
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        sessionStorage.setItem('hasSeenPopup', 'true');
+    };
 
     useEffect(() => {
         if (!currentConversation && conversations.length > 0) {
@@ -118,6 +132,15 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
 
     return (
         <div className="Chat">
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup">
+                        <h2>Welcome to SamGPT!</h2>
+                        <p>This project is a chat application that uses a Decoder-Only Transform GPT model hosted on AWS SageMaker. You can interact with the model by starting a conversation below. The model is designed to respond to your queries in a conversational manner.</p>
+                        <button className="close-popup-button" onClick={handleClosePopup}>Close</button>
+                    </div>
+                </div>
+            )}
             <div className="header">
                 <img src={logo} alt="Logo" className="logo" />
                 <a href="https://github.com/samabwhite/SamGPT" target="_blank" rel="noopener noreferrer" className="github-link">
@@ -145,7 +168,7 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
                                 <Conversation
                                     key={index}
                                     name={conversation.messages[conversation.messages.length - 1]?.message || 'No messages yet'}
-                                    info={conversation.messages[conversation.messages.length - 1]?.timestamp.toString().substring(0, 10) || 'No time'}
+                                    info={conversation.messages[conversation.messages.length - 1]?.timestamp?.toString().substring(0, 10) || 'No time'}
                                     lastSenderName={conversation.messages[conversation.messages.length - 1]?.sender || 'Unknown'}
                                     onClick={() => {
                                         setCurrentConversation(conversation);
