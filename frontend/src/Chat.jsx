@@ -24,6 +24,7 @@ const mapDispatchToProps = dispatch => ({
 
 
 function Chat({ session, conversations, logout, getChat, sendMessage, addConversation }) {
+    const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
     const [currentConversation, setCurrentConversation] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
@@ -31,7 +32,7 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
     useEffect(() => {
         if (!currentConversation && conversations.length > 0) {
             setCurrentConversation(conversations[conversations.length - 1]);
-        } else if (conversations.length == 0) {
+        } else if (conversations.length == 0 && !loading) {
             handleNewConversation();
         }
     }, [conversations]);
@@ -107,6 +108,7 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
     const memoizedGetChat = useCallback(() => {
         if (session.userId) {
             getChat();
+            setLoading(false);
         }
     }, [session.userId, getChat]);
 
