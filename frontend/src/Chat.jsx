@@ -118,7 +118,6 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
 
     return (
         <div className="Chat">
-            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
             <div className="header">
                 <img src={logo} alt="Logo" className="logo" />
                 <a href="https://github.com/samabwhite/SamGPT" target="_blank" rel="noopener noreferrer" className="github-link">
