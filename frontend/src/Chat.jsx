@@ -142,15 +142,16 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
                         </button>
                     </div>
                         <ConversationList className="cs-conversation-list">
-                            {conversations.map((conversation, index) => (
+                            {[...conversations].reverse().map((conversation, index) => (
                                 <Conversation
                                     key={index}
-                                    name={`Conversation ${index + 1}`}
-                                    info={conversation.messages[conversation.messages.length - 1]?.message || 'No messages yet'}
+                                    name={conversation.messages[conversation.messages.length - 1]?.message || 'No messages yet'}
+                                    info={conversation.messages[conversation.messages.length - 1]?.timestamp.toString().substring(0, 10) || 'No time'}
                                     lastSenderName={conversation.messages[conversation.messages.length - 1]?.sender || 'Unknown'}
                                     onClick={() => {
                                         setCurrentConversation(conversation);
                                     }}
+                                    className={conversation.conversationId === currentConversation?.conversationId ? 'cs-conversation current' : 'cs-conversation'}
                                 />
                             ))}
                         </ConversationList>

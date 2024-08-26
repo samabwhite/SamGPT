@@ -206,10 +206,14 @@ body {
 }
 
 .cs-conversation:active {
-    background-color: #8C52FF !important;
+    background-color: #1f1f1f !important;
 }
 
 .cs-conversation:hover {
+    background-color: #1F1F1F;
+}
+
+.cs-conversation.current {
     background-color: #1F1F1F;
 }
 
