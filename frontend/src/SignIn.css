@@ -98,3 +98,6 @@ body {
     text-decoration: underline;
   }
   
+  .logo {
+    height: 50px;
+}

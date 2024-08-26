@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { signin } from "../actions/session";
 import './SignIn.css'; 
+import logo from './assets/logo.png';
 
 const mapStateToProps = ({ errors }) => ({
   errors
@@ -21,6 +22,10 @@ const SignIn = ({ errors, signin }) => {
     signin(user);
   };
   return (
+    <>
+    <div className="header">
+      <img src={logo} alt="Logo" className="logo" />
+    </div>
     <div className="signin-container">
       <div className="signin-box">
         <h1 className="signin-title">Sign In</h1>
@@ -41,6 +46,7 @@ const SignIn = ({ errors, signin }) => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 
