@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation, InputToolbox } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
@@ -12,7 +12,8 @@ import { getChat, sendMessage, addConversation } from '../actions/chat.js';
 
 const mapStateToProps = ({ session, chat }) => ({
   session,
-  conversations: chat.conversations || []  
+  conversations: chat.conversations || [] ,
+  error: chat.error
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -24,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-function Chat({ session, conversations, logout, getChat, sendMessage, addConversation }) {
+function Chat({ session, conversations, error, logout, getChat, sendMessage, addConversation }) {
     const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
     const [currentConversation, setCurrentConversation] = useState(null);
@@ -46,7 +47,7 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
     useEffect(() => {
         if (!currentConversation && conversations.length > 0) {
             setCurrentConversation(conversations[conversations.length - 1]);
-        } else if (conversations.length == 0 && !loading) {
+        } else if (conversations.length === 0 && !loading) {
             handleNewConversation();
         }
     }, [conversations]);
@@ -78,13 +79,18 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
         const initMessage = currentConversation.messages.length === 1 ? currentConversation.messages[0] : null; 
         
         const response = await sendMessage(session, currentConversation.conversationId, newMessage, initMessage);
-        
+
+        if (response.hasOwnProperty("error")) {
+            setTyping(false);
+            return;
+        }
+
         const responseMessage = {
             message: response.message.message,
             sender: "SamGPT",
             direction: "incoming",
             timestamp: new Date() 
-        };
+        };  
         
         const finalMessages = [...updatedMessages, responseMessage];
         
@@ -100,9 +106,6 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
         
         setTyping(false);
     };
-    
-    
-
 
     const handleNewConversation = () => {
         const newConversationId = conversations.length + 1; 
@@ -151,18 +154,18 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
             <div className="chat-container">
                 <MainContainer>
                     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-                    <div className="button-container">
-                        <button onClick={handleNewConversation} className="new-conversation-button">
-                            <span className="material-icons">add</span>
-                        </button>
-                        <button className="collapse-button" onClick={() => setIsCollapsed(!isCollapsed)}>
-                            {isCollapsed ? (
-                                <span className="material-icons sp-icon-open">keyboard_double_arrow_right</span>
-                            ) : (
-                                <span className="material-icons sp-icon-close">keyboard_double_arrow_left</span>
-                            )}
-                        </button>
-                    </div>
+                        <div className="button-container">
+                            <button onClick={handleNewConversation} className="new-conversation-button">
+                                <span className="material-icons">add</span>
+                            </button>
+                            <button className="collapse-button" onClick={() => setIsCollapsed(!isCollapsed)}>
+                                {isCollapsed ? (
+                                    <span className="material-icons sp-icon-open">keyboard_double_arrow_right</span>
+                                ) : (
+                                    <span className="material-icons sp-icon-close">keyboard_double_arrow_left</span>
+                                )}
+                            </button>
+                        </div>
                         <ConversationList className="cs-conversation-list">
                             {[...conversations].reverse().map((conversation, index) => (
                                 <Conversation
@@ -187,6 +190,7 @@ function Chat({ session, conversations, logout, getChat, sendMessage, addConvers
                         <MessageInput placeholder="Type message here" onSend={handleSend} attachButton={false} />
                     </ChatContainer>
                 </MainContainer>
+                {error && <p className="chat-error">{error}</p>} 
             </div>
         </div>
     );

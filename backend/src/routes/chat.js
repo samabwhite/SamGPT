@@ -32,7 +32,10 @@ chatRouter.post("", async (req, res) => {
     try {
         const { user } = req.session;
         const { conversationId, message, initMessage } = req.body;
-
+        if (message.message.length > 999) {
+            throw new Error("Message length too large");
+        }
+        
         if (user) {
             const foundUser = await User.findById(user.userId);
             if (!foundUser) {

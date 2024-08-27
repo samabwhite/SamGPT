@@ -10,7 +10,6 @@ const sessionRouter = express.Router();
 sessionRouter.post("", async (req, res) => {
     try {
         const { email, password } = req.body;
-        await signIn.validateAsync({ email, password });
 
         const user = await User.findOne({ email });
         if (user && user.comparePasswords(password)) {

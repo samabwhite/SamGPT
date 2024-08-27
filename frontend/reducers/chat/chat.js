@@ -7,7 +7,7 @@ import {
 
 const initialState = {
     conversations: [],  
-    errors: [],
+    error: [],
     messages: []
 };
 
@@ -17,18 +17,18 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 conversations: action.chat.conversations || [],  
-                errors: []
+                error: []
             };
         case RECEIVE_NEW_MESSAGE:
             return {
                 ...state,
                 messages: [...state.messages, action.message],
-                errors: []
+                error: []
             };
         case RECEIVE_CHAT_ERRORS:
             return {
                 ...state,
-                errors: action.errors
+                error: action.error
             };
         case UPDATE_CONVERSATION: 
             const updatedConversations = state.conversations.map(convo =>

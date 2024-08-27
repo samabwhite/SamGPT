@@ -10,9 +10,9 @@ const receiveCurrentUser = user => ({
     user
 });
 
-const receiveSessionErrors = errors => ({
+const receiveSessionErrors = error => ({
     type: RECEIVE_SESSION_ERRORS,
-    errors
+    error
 });
 
 const logoutCurrentUser = () => ({
@@ -28,10 +28,10 @@ export const signin = user => async dispatch => {
         if (response.ok) {
             return dispatch(receiveCurrentUser(data));
         } else {
-            return dispatch(receiveSessionErrors(data.errors || ['Sign-in failed']));
+            return dispatch(receiveSessionErrors(data.message || ['Sign-in failed']));
         }
     } catch (error) {
-        return dispatch(receiveSessionErrors([error.message || 'An unexpected error occurred during sign-in']));
+        return dispatch(receiveSessionErrors([error|| 'An unexpected error occurred during sign-in']));
     }
 };
 
@@ -42,10 +42,10 @@ export const register = user => async dispatch => {
         if (response.ok) {
             return dispatch(receiveCurrentUser(data));
         } else {
-            return dispatch(receiveSessionErrors(data.errors || ['Registration failed']));
+            return dispatch(receiveSessionErrors(data.message || ['Registration failed']));
         }
     } catch (error) {
-        return dispatch(receiveSessionErrors([error.message || 'An unexpected error occurred during registration']));
+        return dispatch(receiveSessionErrors([error || 'An unexpected error occurred during registration']));
     }
 };
 

@@ -5,14 +5,15 @@ import { register } from "../actions/session";
 import './Register.css'; 
 import logo from './assets/logo.png';
 
-const mapStateToProps = ({ errors }) => ({
-  errors
+const mapStateToProps = ({ session }) => ({
+  error: session.error
 });
 const mapDispatchToProps = dispatch => ({
   register: user => dispatch(register(user))
 });
 
-const Register = ({ errors, register }) => {
+const Register = ({ error, register }) => {
+
   const handleSubmit = e => {
     e.preventDefault();
     const user = {
@@ -30,7 +31,7 @@ const Register = ({ errors, register }) => {
       <div className="register-container">
         <div className="register-box">
           <h1 className="register-title">Register</h1>
-          {errors && <p className="register-error">{errors}</p>}
+          {error && <p className="register-error">{error}</p>}
           <form className="register-form" onSubmit={handleSubmit}>
             <div className="input-group">
               <label className="input-label">Username:</label>

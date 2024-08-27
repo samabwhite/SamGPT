@@ -15,9 +15,9 @@ const receiveNewMessage = message => ({
     message
 });
 
-const receiveChatErrors = errors => ({
+const receiveChatErrors = error => ({
     type: RECEIVE_CHAT_ERRORS,
-    errors
+    error
 });
 
 const updateConversation = conversation => ({
@@ -39,8 +39,6 @@ export const getChat = () => async dispatch => {
     }
 };
 
-
-
 export const sendMessage = (user, conversationId, message, initMessage) => async dispatch => {
     try {
         const response = await apiUtil.sendMessage(user, conversationId, message, initMessage);
@@ -49,10 +47,10 @@ export const sendMessage = (user, conversationId, message, initMessage) => async
         if (response.ok) {
             return dispatch(receiveNewMessage(data));
         } else {
-            return dispatch(receiveChatErrors(data.errors || ['Failed to send message']));
+            return dispatch(receiveChatErrors(data.message || ['Failed to send message']));
         }
     } catch (error) {
-        return dispatch(receiveChatErrors([error.message || 'An unexpected error occurred while sending the message']));
+        return dispatch(receiveChatErrors([error || 'An unexpected error occurred while sending the message']));
     }
 };
 

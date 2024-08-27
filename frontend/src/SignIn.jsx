@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { signin } from "../actions/session";
 import './SignIn.css'; 
 import logo from './assets/logo.png';
 
-const mapStateToProps = ({ errors }) => ({
-  errors
+const mapStateToProps = ({ session }) => ({
+  error : session.error
 });
 const mapDispatchToProps = dispatch => ({
   signin: user => dispatch(signin(user))
 });
 
-const SignIn = ({ errors, signin }) => {
+
+
+const SignIn = ({ error, signin }) => {
   const handleSubmit = e => {
     e.preventDefault();
     const user = {
@@ -21,6 +23,7 @@ const SignIn = ({ errors, signin }) => {
     };
     signin(user);
   };
+  
   return (
     <>
     <div className="header">
@@ -29,7 +32,7 @@ const SignIn = ({ errors, signin }) => {
     <div className="signin-container">
       <div className="signin-box">
         <h1 className="signin-title">Sign In</h1>
-        {errors && <p className="signin-error">{errors}</p>}
+        {error && <p className="signin-error">{error}</p>}
         <form className="signin-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <label className="input-label">Email:</label>

@@ -77,6 +77,15 @@ main {
     padding-bottom: 10px;
 }
 
+.chat-error {
+    color: #ff4d4f;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-align: right; 
+}
+
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -282,7 +291,6 @@ body {
     display: none;
 }
 
-/* Popup styles */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -368,4 +376,3 @@ body {
         font-size: 20px; 
     }
 }
-    
