@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation, InputToolbox } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';

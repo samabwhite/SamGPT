@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
     userId: null,
@@ -8,21 +7,45 @@ const initialState = {
     status: 'idle'
 }
 
+const setUserDetails = (state, action) => {
+    const { userId, username } = action.payload;
+    state.userId = userId;
+    state.username = username;
+};
+
 export const sessionSlice = createSlice({
     name: 'session',
     initialState,
-    reducers: {
-        setUser: (state, action) => {
-            userId, username = action.payload;
-            state.userId = userId;
-            state.username = username;
-        },
-        logoutUser: (state) => {
-            state = initialState;
-        }
+    extraReducers: builder => {
+        // signin, register, and getSession
+        // loop for each action since all cases are equivalent
+        [signin, register, getSession].forEach((action) => {
+            builder
+                .addCase(action.pending, (state, action) => {
+                    state.status = 'pending';
+                })
+                .addCase(action.fulfilled, (state, action) => {
+                    state.status = 'succeeded';
+                    setUserDetails(state, action);
+                })
+                .addCase(action.rejected, (state, action) => {
+                    state.status = 'failed';
+                    state.error = action.error.message ?? 'Unknown Error';
+                })
+        })
+        // logout
+        .addCase(logout.pending, (state, action) => {
+            state.status = 'pending';
+        })
+        .addCase(logout.fulfilled, (state, action) => {
+            return {...initialState};
+        })
+        .addCase(logout.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message ?? 'Unknown Error';
+        });
     }
 });
-
 
 
 
@@ -32,6 +55,17 @@ const signin = createAsyncThunk("signin", async user => {
         body: JSON.stringify(user),
         headers: {
             "Content-Type": "application/json"
+        }
+    });
+    return res?.json();
+});
+
+const register = createAsyncThunk("register", async user => {
+    const res = await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: {
+            "Content-Type": "application/json",
         }
     });
     return res?.json();
@@ -53,24 +87,7 @@ const getSession = createAsyncThunk("getSession", async user => {
     return res?.json();
 });
 
-const register = createAsyncThunk("register", async user => {
-    const res = await fetch("/api/users", {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: {
-            "Content-Type": "application/json",
-        }
-    });
-    return res?.json();
-});
-
-
-
-
-
-
-
-export const { setUser, logoutUser, getSessionError } = sessionSlice.actions
+export { signin, register, logout, getSession };
 
 export default sessionSlice.reducer
 

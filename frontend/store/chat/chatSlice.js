@@ -74,8 +74,7 @@ const sendMessage = createAsyncThunk("sendMessage", async (user, conversationId,
     return res.json();
 });
 
-
-
 export const { addConversation } = chatSlice.actions;
+export { getConversations, sendMessage };
 
 export default chatSlice.reducer;
