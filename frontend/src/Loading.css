@@ -1,0 +1,26 @@
+.loading-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.loading-logo {
+    width: 120px; 
+    height: auto;
+    animation: spinlogo 2s linear infinite;
+}
+
+@keyframes spinlogo {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg); 
+    }
+}

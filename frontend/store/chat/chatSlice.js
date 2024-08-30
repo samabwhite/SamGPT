@@ -12,7 +12,15 @@ export const chatSlice = createSlice({
     initialState,
     reducers: {
         addConversation: (state, action) => {
-            state.conversations.push(action.payload.conversation);
+            state.conversations.push(action.payload);
+        },
+        updateConversation: (state, action) => {
+            const index = state.conversations.findIndex(
+                (conversation) => conversation.conversationId === action.payload.conversationId
+            );
+            if (index !== -1) {
+                state.conversations[index] = action.payload;
+            }
         }
     },
     extraReducers: builder => {
@@ -24,6 +32,7 @@ export const chatSlice = createSlice({
             .addCase(getConversations.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.conversations = action.payload.conversations;
+                state.error = null;
             })
             .addCase(getConversations.rejected, (state, action) => {
                 state.status = 'failed';
@@ -37,6 +46,7 @@ export const chatSlice = createSlice({
             .addCase(sendMessage.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.messages.push(action.payload.message);
+                state.error = null;
             })
             .addCase(sendMessage.rejected, (state, action) => {
                 state.status = 'failed';
@@ -55,10 +65,14 @@ const getConversations = createAsyncThunk("getConversations", async () => {
         },
         credentials: "include"
     });
-    return res?.json();
+    const body = await res.json();
+    if (!res.ok) {
+        throw new Error(body.message);
+    }
+    return body;
 });
 
-const sendMessage = createAsyncThunk("sendMessage", async (user, conversationId, message, initMessage)  => {
+const sendMessage = createAsyncThunk("sendMessage", async ({ user, conversationId, message, initMessage }) => {
     const res = await fetch("api/chat", {
         method: "POST",
         body: JSON.stringify({
@@ -71,10 +85,15 @@ const sendMessage = createAsyncThunk("sendMessage", async (user, conversationId,
             "Content-Type": "application/json"
         }
     });
-    return res.json();
+    const body = await res.json();
+    if (!res.ok) {
+        throw new Error(body.message);
+    }
+    return body;
 });
 
-export const { addConversation } = chatSlice.actions;
+export const { addConversation, updateConversation } = chatSlice.actions;
+
 export { getConversations, sendMessage };
 
 export default chatSlice.reducer;

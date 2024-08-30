@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkSessionValidity } from "../actions/session";
+import { useEffect } from "react";
+import { getSession } from "../store/session/sessionSlice.js";
 
 const AuthRoute = ({ element }) => {
   const dispatch = useDispatch();
-  const loggedIn = useSelector(state => Boolean(state.session?.userId));
+  const loggedIn = useSelector((state) => state.sessionReducer.userId);
+
   useEffect(() => {
-    if (loggedIn) {
-      dispatch(checkSessionValidity());
-    }
-  }, [dispatch, loggedIn]);
+    dispatch(getSession());
+  }, [dispatch]);
+
   return loggedIn ? <Navigate to="/chat" replace /> : element;
 };
 

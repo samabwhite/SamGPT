@@ -1,8 +1,7 @@
 import Chat from './Chat.jsx';
 import Register from './Register.jsx';
 import SignIn from './SignIn.jsx';
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthRoute from './AuthRoute.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 

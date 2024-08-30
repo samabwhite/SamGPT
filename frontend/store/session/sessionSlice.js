@@ -9,6 +9,7 @@ const initialState = {
 
 const setUserDetails = (state, action) => {
     const { userId, username } = action.payload;
+    state.status = 'succeeded';
     state.userId = userId;
     state.username = username;
 };
@@ -25,7 +26,6 @@ export const sessionSlice = createSlice({
                     state.status = 'pending';
                 })
                 .addCase(action.fulfilled, (state, action) => {
-                    state.status = 'succeeded';
                     setUserDetails(state, action);
                 })
                 .addCase(action.rejected, (state, action) => {
@@ -33,17 +33,18 @@ export const sessionSlice = createSlice({
                     state.error = action.error.message ?? 'Unknown Error';
                 })
         })
-        // logout
-        .addCase(logout.pending, (state, action) => {
-            state.status = 'pending';
-        })
-        .addCase(logout.fulfilled, (state, action) => {
-            return {...initialState};
-        })
-        .addCase(logout.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message ?? 'Unknown Error';
-        });
+        builder
+            // logout
+            .addCase(logout.pending, (state, action) => {
+                state.status = 'pending';
+            })
+            .addCase(logout.fulfilled, (state, action) => {
+                return {...initialState};
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message ?? 'Unknown Error';
+            });
     }
 });
 
@@ -57,7 +58,11 @@ const signin = createAsyncThunk("signin", async user => {
             "Content-Type": "application/json"
         }
     });
-    return res?.json();
+    const body = await res.json();
+    if (!res.ok) {
+        throw new Error(body.message);
+    }
+    return body;
 });
 
 const register = createAsyncThunk("register", async user => {
@@ -68,7 +73,11 @@ const register = createAsyncThunk("register", async user => {
             "Content-Type": "application/json",
         }
     });
-    return res?.json();
+    const body = await res.json();
+    if (!res.ok) {
+        throw new Error(body.message);
+    }
+    return body;
 });
 
 const logout = createAsyncThunk("logout", async () => {
@@ -84,7 +93,11 @@ const getSession = createAsyncThunk("getSession", async user => {
             "Content-Type": "application/json"
         }
     });
-    return res?.json();
+    const body = await res.json();
+    if (!body.user) {
+        throw new Error(body.message || "");
+    }
+    return body.user;
 });
 
 export { signin, register, logout, getSession };
