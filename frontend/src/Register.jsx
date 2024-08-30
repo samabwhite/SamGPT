@@ -1,18 +1,14 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { register } from "../actions/session";
+import { register } from "../store/session/sessionSlice.js";
 import './Register.css'; 
 import logo from './assets/logo.png';
 
-const mapStateToProps = ({ session }) => ({
-  error: session.error
-});
-const mapDispatchToProps = dispatch => ({
-  register: user => dispatch(register(user))
-});
+import { useDispatch, useSelector } from "react-redux";
 
-const Register = ({ error, register }) => {
+function Register() {
+  const dispatch = useDispatch();
+  const error = useSelector((state) => state.sessionReducer?.error);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -21,8 +17,9 @@ const Register = ({ error, register }) => {
       email: e.target[1].value,
       password: e.target[2].value
     };
-    register(user);
+    dispatch(register(user));
   };
+
   return (
     <>
       <div className="header">
@@ -54,9 +51,6 @@ const Register = ({ error, register }) => {
       </div>
     </>
   );
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Register);
+export default Register;

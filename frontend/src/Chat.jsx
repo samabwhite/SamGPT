@@ -1,47 +1,34 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { unwrapResult } from '@reduxjs/toolkit';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation, InputToolbox } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
 
-import { connect } from "react-redux";
-import { logout } from "../actions/session";
-import { getChat, sendMessage, addConversation } from '../actions/chat.js';
+import { logout } from "../store/session/sessionSlice.js";
+import { getConversations, sendMessage, addConversation, updateConversation } from '../store/chat/chatSlice.js';
+
+import { useDispatch, useSelector } from "react-redux";
 
 
-const mapStateToProps = ({ session, chat }) => ({
-  session,
-  conversations: chat.conversations || [] ,
-  error: chat.error
-});
+function Chat() {
+    const dispatch = useDispatch();
 
-const mapDispatchToProps = dispatch => ({
-    logout: () => dispatch(logout()),
-    getChat: () => dispatch(getChat()),
-    sendMessage: (user, conversationId, message, initMessage) => 
-        dispatch(sendMessage(user, conversationId, message, initMessage)),
-    addConversation: (conversation) => dispatch(addConversation(conversation))
-});
+    const conversations = useSelector((state) => state.chatReducer.conversations);
+    const sessionReducer = useSelector((state) => state.sessionReducer);
+    const chatReducer = useSelector((state) => state.chatReducer);
+    const session = { userId : sessionReducer.userId, username: sessionReducer.username }
 
-
-function Chat({ session, conversations, error, logout, getChat, sendMessage, addConversation }) {
     const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
     const [currentConversation, setCurrentConversation] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
-
-    useEffect(() => {
-        const hasSeenPopup = sessionStorage.getItem('hasSeenPopup');
-        if (!hasSeenPopup) {
-            setShowPopup(true);
-        }
-    }, []);
+    const [error, setError] = useState(null);
 
     const handleClosePopup = () => {
         setShowPopup(false);
-        sessionStorage.setItem('hasSeenPopup', 'true');
     };
 
     useEffect(() => {
@@ -52,7 +39,16 @@ function Chat({ session, conversations, error, logout, getChat, sendMessage, add
         }
     }, [conversations]);
 
+    useEffect(() => {
+        setError(chatReducer.error);
+    }, [chatReducer.error]);
+
+    const handleLogout = async () => {
+        dispatch(logout());
+    }
+
     const handleSend = async (message) => {
+        setError(null);
         if (!currentConversation) return;
         
         const newMessage = {
@@ -69,43 +65,51 @@ function Chat({ session, conversations, error, logout, getChat, sendMessage, add
             messages: updatedMessages,
             updatedAt: new Date() 
         };
-
+    
         setCurrentConversation(updatedConversation);
         
-        addConversation(updatedConversation);
+        dispatch(updateConversation(updatedConversation));
         
         setTyping(true);
         
-        const initMessage = currentConversation.messages.length === 1 ? currentConversation.messages[0] : null; 
+        const initMessage = currentConversation.messages.length === 1 ? currentConversation.messages[0] : null;
         
-        const response = await sendMessage(session, currentConversation.conversationId, newMessage, initMessage);
-
-        if (response.hasOwnProperty("error")) {
+        try {
+            const resultAction = await dispatch(sendMessage({
+                user: session,
+                conversationId: currentConversation.conversationId,
+                message: newMessage,
+                initMessage: initMessage
+            }));
+            
+            const result = unwrapResult(resultAction);
+            
+            const responseMessage = {
+                message: result.message,
+                sender: "SamGPT",
+                direction: "incoming",
+                timestamp: new Date() 
+            };
+    
+            const finalMessages = [...updatedMessages, responseMessage];
+        
+            const finalConversation = { 
+                ...updatedConversation, 
+                messages: finalMessages,
+                updatedAt: new Date() 
+            };
+            
+            setCurrentConversation(finalConversation);
+            
+            dispatch(updateConversation(finalConversation));
+            
+        } catch (error) {
+            console.error("Error sending message:", error);
+        } finally {
             setTyping(false);
-            return;
         }
-
-        const responseMessage = {
-            message: response.message.message,
-            sender: "SamGPT",
-            direction: "incoming",
-            timestamp: new Date() 
-        };  
-        
-        const finalMessages = [...updatedMessages, responseMessage];
-        
-        const finalConversation = { 
-            ...updatedConversation, 
-            messages: finalMessages,
-            updatedAt: new Date() 
-        };
-        
-        setCurrentConversation(finalConversation);
-        
-        addConversation(finalConversation);
-        
-        setTyping(false);
     };
+    
 
     const handleNewConversation = () => {
         const newConversationId = conversations.length + 1; 
@@ -118,20 +122,20 @@ function Chat({ session, conversations, error, logout, getChat, sendMessage, add
             }]
         };
 
-        conversations.push(newConversation);
+        dispatch(addConversation(newConversation));
         setCurrentConversation(newConversation);
     };
 
-    const memoizedGetChat = useCallback(() => {
+    const memoizedgetConversations = useCallback(() => {
         if (session.userId) {
-            getChat();
+            dispatch(getConversations());
             setLoading(false);
         }
-    }, [session.userId, getChat]);
+    }, [session.userId, getConversations]);
 
     useEffect(() => {
-        memoizedGetChat();
-    }, [memoizedGetChat]);
+        memoizedgetConversations();
+    }, [memoizedgetConversations]);
 
     return (
         <div className="Chat">
@@ -149,7 +153,7 @@ function Chat({ session, conversations, error, logout, getChat, sendMessage, add
                 <a href="https://github.com/samabwhite/SamGPT" target="_blank" rel="noopener noreferrer" className="github-link">
                     <img src={githubLogo} alt="GitHub" className="github-logo" />
                 </a>
-                <button onClick={logout} className="logout-button">Logout</button>
+                <button onClick={handleLogout} className="logout-button">Logout</button>
             </div>
             <div className="chat-container">
                 <MainContainer>
@@ -196,7 +200,4 @@ function Chat({ session, conversations, error, logout, getChat, sendMessage, add
     );
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Chat);
+export default Chat;

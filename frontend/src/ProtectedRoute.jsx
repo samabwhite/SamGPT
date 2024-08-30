@@ -1,20 +1,38 @@
-import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkSessionValidity, logout } from "../actions/session";
+import { useEffect, useState } from "react";
+import { getSession, logout } from "../store/session/sessionSlice.js";
+import Loading from './Loading.jsx'; 
 
 const ProtectedRoute = ({ element }) => {
   const dispatch = useDispatch();
-  const loggedIn = useSelector(state => Boolean(state.session?.userId));
+  const session = useSelector((state) => state.sessionReducer);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (loggedIn) {
-      dispatch(checkSessionValidity()).catch(() => {
-        dispatch(logout());
-      });
+    const fetchSession = async () => {
+      await dispatch(getSession());
+      setLoading(false);
+    };
+
+    fetchSession();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!loading && !session.userId) {
+      dispatch(logout());
     }
-  }, [dispatch, loggedIn]);
-  return loggedIn ? element : <Navigate to="/signin" replace />;
+  }, [dispatch, loading, session.userId]);
+
+  if (loading) {
+    return <Loading />; 
+  }
+
+  if (!session.userId) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return element;
 };
 
 export default ProtectedRoute;

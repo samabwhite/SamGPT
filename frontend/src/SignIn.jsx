@@ -1,27 +1,21 @@
-import React, { useEffect } from 'react';
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { signin } from "../actions/session";
+import { signin } from "../store/session/sessionSlice.js";
 import './SignIn.css'; 
 import logo from './assets/logo.png';
 
-const mapStateToProps = ({ session }) => ({
-  error : session.error
-});
-const mapDispatchToProps = dispatch => ({
-  signin: user => dispatch(signin(user))
-});
+import { useDispatch, useSelector } from "react-redux";
 
+function SignIn() {
+  const dispatch = useDispatch();
+  const error = useSelector((state) => state.sessionReducer?.error);
 
-
-const SignIn = ({ error, signin }) => {
   const handleSubmit = e => {
     e.preventDefault();
     const user = {
       email: e.target[0].value,
       password: e.target[1].value
     };
-    signin(user);
+    dispatch(signin(user));
   };
   
   return (
@@ -51,9 +45,6 @@ const SignIn = ({ error, signin }) => {
     </div>
     </>
   );
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignIn);
+export default SignIn;
