@@ -189,7 +189,7 @@ function Chat() {
                         </ConversationList>
                     </div>
                     <ChatContainer>
-                        <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
+                        <MessageList scrollBehavior="smooth" typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
                             {currentConversation?.messages.map((message, i) => (
                                 <Message key={i} model={message} />
                             ))}

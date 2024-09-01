@@ -195,6 +195,11 @@ body,
     background-color: #1F1F1F !important;
 }
 
+.cs-message {
+    width: 50%;
+    margin-top: 2rem !important;
+}
+
 body {
     background-color: #181818;
     margin: 0;
@@ -379,4 +384,9 @@ body {
     .material-icons {
         font-size: 20px; 
     }
+
+    .cs-message {
+        width: 90%;
+    }
+    
 }
