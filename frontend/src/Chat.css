@@ -191,6 +191,10 @@ body,
     font-family: 'Roboto', sans-serif;
 }
 
+.cs-message-input--disabled .cs-message-input__content-editor-wrapper {
+    background-color: #1F1F1F !important;
+}
+
 body {
     background-color: #181818;
     margin: 0;

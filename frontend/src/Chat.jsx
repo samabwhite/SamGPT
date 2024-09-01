@@ -26,6 +26,7 @@ function Chat() {
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [error, setError] = useState(null);
+    const [sending, setSending] = useState(false);
 
     const handleClosePopup = () => {
         setShowPopup(false);
@@ -48,6 +49,7 @@ function Chat() {
     }
 
     const handleSend = async (message) => {
+        setSending(true);
         setError(null);
         if (!currentConversation) return;
         
@@ -107,6 +109,7 @@ function Chat() {
             console.error("Error sending message:", error);
         } finally {
             setTyping(false);
+            setSending(false);
         }
     };
     
@@ -191,7 +194,7 @@ function Chat() {
                                 <Message key={i} model={message} />
                             ))}
                         </MessageList>
-                        <MessageInput placeholder="Type message here" onSend={handleSend} attachButton={false} />
+                        <MessageInput placeholder={sending ? "Please wait for response..." : "Type message here"} onSend={handleSend} attachButton={false} disabled={sending}/>
                     </ChatContainer>
                 </MainContainer>
                 {error && <p className="chat-error">{error}</p>} 
