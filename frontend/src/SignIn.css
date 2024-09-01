@@ -59,6 +59,7 @@ body {
     font-size: 1rem;
     color: #333333;
     box-sizing: border-box;
+    background-color: white;
   }
   
   .input-field:focus {
