@@ -372,11 +372,15 @@ body {
         height: 24px; 
     }
 
+    .collapsed {
+        width: 50px;
+    }
+
     .collapse-button,
     .new-conversation-button {
         width: 35px; 
         height: 35px;
-        margin: 0.25rem;
+        margin-right: 0;
     }
 
     .sp-icon-open,
