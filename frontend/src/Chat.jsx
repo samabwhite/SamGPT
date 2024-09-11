@@ -24,7 +24,7 @@ function Chat() {
     const [typing, setTyping] = useState(false);
     const [currentConversation, setCurrentConversation] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
-    const [showPopup, setShowPopup] = useState(false);
+    const [showPopup, setShowPopup] = useState(true);
     const [error, setError] = useState(null);
     const [sending, setSending] = useState(false);
 
