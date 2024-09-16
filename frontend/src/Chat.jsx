@@ -45,7 +45,7 @@ function Chat() {
     }, [chatReducer.error]);
 
     const handleLogout = async () => {
-        dispatch(logout());
+        await dispatch(logout());
     }
 
     const handleSend = async (message) => {
@@ -70,7 +70,7 @@ function Chat() {
     
         setCurrentConversation(updatedConversation);
         
-        dispatch(updateConversation(updatedConversation));
+        await dispatch(updateConversation(updatedConversation));
         
         setTyping(true);
         
@@ -103,7 +103,7 @@ function Chat() {
             
             setCurrentConversation(finalConversation);
             
-            dispatch(updateConversation(finalConversation));
+            await dispatch(updateConversation(finalConversation));
             
         } catch (error) {
             console.error("Error sending message:", error);
@@ -131,6 +131,7 @@ function Chat() {
 
     const memoizedgetConversations = useCallback(() => {
         if (session.userId) {
+            // await dispatch(getConversations());
             dispatch(getConversations());
             setLoading(false);
         }
@@ -189,7 +190,7 @@ function Chat() {
                         </ConversationList>
                     </div>
                     <ChatContainer>
-                        <MessageList scrollBehavior="smooth" typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
+                        <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
                             {currentConversation?.messages.map((message, i) => (
                                 <Message key={i} model={message} />
                             ))}

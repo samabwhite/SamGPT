@@ -9,13 +9,13 @@ function SignIn() {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.sessionReducer?.error);
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const user = {
       email: e.target[0].value,
       password: e.target[1].value
     };
-    dispatch(signin(user));
+    await dispatch(signin(user));
   };
   
   return (

@@ -119,6 +119,7 @@ main {
 
 .cs-message-input {
     flex-shrink: 0;
+    font-size: calc(0.8vw + 15px);
 }
 
 .cs-main-container {
@@ -164,6 +165,7 @@ main {
 .cs-message-list__typing-indicator-container div,
 .cs-button--send {
     color: #8C52FF;
+    /* font-size: 0.7vw; */
 }
 
 .cs-message-input__content-editor[data-placeholder]:empty::before {
@@ -199,6 +201,17 @@ body,
     width: 50%;
     margin-top: 2rem !important;
 }
+
+.cs-message-input {
+    flex-shrink: 0;
+}
+
+.cs-message,
+.cs-message-input,
+.cs-conversation__name {
+    font-size: calc(0.3vw + 15px);
+}
+
 
 body {
     background-color: #181818;

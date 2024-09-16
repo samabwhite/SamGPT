@@ -10,7 +10,7 @@ const ProtectedRoute = ({ element }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSession = async () => {
+    async function fetchSession() {
       await dispatch(getSession());
       setLoading(false);
     };
@@ -19,9 +19,13 @@ const ProtectedRoute = ({ element }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!loading && !session.userId) {
-      dispatch(logout());
+    async function checkLogout() {
+      if (!loading && !session.userId) {
+        await dispatch(logout());
+      }
     }
+    
+    checkLogout();
   }, [dispatch, loading, session.userId]);
 
   if (loading) {

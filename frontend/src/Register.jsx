@@ -10,14 +10,14 @@ function Register() {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.sessionReducer?.error);
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const user = {
       username: e.target[0].value,
       email: e.target[1].value,
       password: e.target[2].value
     };
-    dispatch(register(user));
+    await dispatch(register(user));
   };
 
   return (

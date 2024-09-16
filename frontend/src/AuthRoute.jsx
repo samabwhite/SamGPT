@@ -8,7 +8,11 @@ const AuthRoute = ({ element }) => {
   const loggedIn = useSelector((state) => state.sessionReducer.userId);
 
   useEffect(() => {
-    dispatch(getSession());
+    async function fetchSession() {
+      await dispatch(getSession());
+    }
+    
+    fetchSession();
   }, [dispatch]);
 
   return loggedIn ? <Navigate to="/chat" replace /> : element;
