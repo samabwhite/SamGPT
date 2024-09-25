@@ -44,8 +44,6 @@ chatRouter.post("", async (req, res) => {
 
             let conversation = foundUser.conversations.find(c => c.conversationId === conversationId);
             const newMessage = new Message(message);
-            
-            console.log("New User Message:", newMessage);
 
             if (!conversation) {
                 const firstMessage = new Message(initMessage);
@@ -77,7 +75,6 @@ chatRouter.post("", async (req, res) => {
                     sender: "SamGPT",
                     direction: "incoming"
                 });
-                console.log("Model Response Message:", modelMessage);
                 conversation.messages.push(modelMessage);
                 conversation.updatedAt = Date.now();
 
