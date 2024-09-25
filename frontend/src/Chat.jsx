@@ -25,7 +25,6 @@ function Chat() {
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [showPopup, setShowPopup] = useState(true);
     const [error, setError] = useState(null);
-    const [sending, setSending] = useState(false);
 
     const handleClosePopup = () => {
         setShowPopup(false);
@@ -43,74 +42,56 @@ function Chat() {
         setError(chatReducer.error);
     }, [chatReducer.error]);
 
-    const handleLogout = async () => {
-        await dispatch(logout());
+    const handleLogout = () => {
+        dispatch(logout());
     }
 
-    const handleSend = async (message) => {
-        setSending(true);
-        setError(null);
-        if (!chatReducer.currentConversation) return;
-        
+    const addMessage = (message, sender, direction, currentConversation) => {
         const newMessage = {
             message: message,
-            sender: "user",
-            direction: "outgoing",
+            sender: sender,
+            direction: direction,
             timestamp: new Date() 
         };
-        
-        const updatedMessages = [...chatReducer.currentConversation.messages, newMessage];
-        
+
+        const updatedMessages = [...currentConversation.messages, newMessage];
+            
         const updatedConversation = { 
-            ...chatReducer.currentConversation, 
+            ...currentConversation, 
             messages: updatedMessages,
             updatedAt: new Date() 
         };
-    
-        await dispatch(setCurrentConversation(updatedConversation));
         
-        await dispatch(updateConversation(updatedConversation));
-        
-        setTyping(true);
-        
-        const initMessage = chatReducer.currentConversation.messages.length === 1 ? chatReducer.currentConversation.messages[0] : null;
-        
-        try {
-            console.log("start try block");
+        dispatch(setCurrentConversation(updatedConversation));
+        dispatch(updateConversation(updatedConversation));
 
+        return updatedConversation;
+    }
+
+    const handleSend = async (message) => {
+        try {
+            setTyping(true);
+            setError(null);
+            if (!chatReducer.currentConversation) return;
+            
+            const updatedConversation = addMessage(message, "user", "outgoing", chatReducer.currentConversation);
+
+            const initMessage = updatedConversation.messages.length === 1 ? updatedConversation.messages[0] : null;
+            
             const resultAction = await dispatch(sendMessage({
                 user: session,
                 conversationId: chatReducer.currentConversation.conversationId,
-                message: newMessage,
+                message: updatedConversation.messages[updatedConversation.messages.length-1],
                 initMessage: initMessage
             }));
             
             const result = unwrapResult(resultAction);
             
-            const responseMessage = {
-                message: result.message,
-                sender: "SamGPT",
-                direction: "incoming",
-                timestamp: new Date() 
-            };
-    
-            const finalMessages = [...updatedMessages, responseMessage];
-        
-            const finalConversation = { 
-                ...updatedConversation, 
-                messages: finalMessages,
-                updatedAt: new Date() 
-            };
-            
-            await dispatch(setCurrentConversation(finalConversation));
-            
-            await dispatch(updateConversation(finalConversation));
-            
+            addMessage(result.message, "SamGPT", "incoming", updatedConversation);
         } catch (error) {
             console.error("Error sending message:", error);
         } finally {
             setTyping(false);
-            setSending(false);
         }
     };
     
@@ -130,17 +111,16 @@ function Chat() {
         dispatch(setCurrentConversation(newConversation)); 
     };
 
-    const memoizedgetConversations = useCallback(() => {
-        if (session.userId) {
-            // await dispatch(getConversations());
-            dispatch(getConversations());
-            setLoading(false);
-        }
-    }, [session.userId, getConversations]);
-
-    useEffect(() => {
-        memoizedgetConversations();
-    }, [memoizedgetConversations]);
+        useEffect(() => {
+            const fetchConversations = async () => {
+                if (session.userId) {
+                    await dispatch(getConversations());
+                    setLoading(false);
+                }
+            };
+            fetchConversations();
+        }, [session.userId, dispatch]);
+    
 
     return (
         <div className="Chat">
@@ -196,7 +176,7 @@ function Chat() {
                                 <Message key={i} model={message} />
                             ))}
                         </MessageList>
-                        <MessageInput placeholder={sending ? "Please wait for response..." : "Type message here"} onSend={handleSend} attachButton={false} disabled={sending}/>
+                        <MessageInput placeholder={typing ? "Please wait for response..." : "Type message here"} onSend={handleSend} attachButton={false} disabled={typing}/>
                     </ChatContainer>
                 </MainContainer>
                 {error && <p className="chat-error">{error}</p>} 
