@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 
 const initialState = {
     conversations: [],
+    currentConversation: null,
     messages: [],
     error: null,
     status: 'idle'
@@ -21,6 +22,9 @@ export const chatSlice = createSlice({
             if (index !== -1) {
                 state.conversations[index] = action.payload;
             }
+        },
+        setCurrentConversation: (state, action) => {
+            state.currentConversation = action.payload;
         }
     },
     extraReducers: builder => {
@@ -92,7 +96,7 @@ const sendMessage = createAsyncThunk("sendMessage", async ({ user, conversationI
     return body;
 });
 
-export const { addConversation, updateConversation } = chatSlice.actions;
+export const { addConversation, updateConversation, setCurrentConversation } = chatSlice.actions;
 
 export { getConversations, sendMessage };
 

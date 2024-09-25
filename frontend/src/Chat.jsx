@@ -7,7 +7,7 @@ import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
 
 import { logout } from "../store/session/sessionSlice.js";
-import { getConversations, sendMessage, addConversation, updateConversation } from '../store/chat/chatSlice.js';
+import { getConversations, sendMessage, addConversation, updateConversation, setCurrentConversation } from '../store/chat/chatSlice.js';
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,7 +22,6 @@ function Chat() {
 
     const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
-    const [currentConversation, setCurrentConversation] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [showPopup, setShowPopup] = useState(true);
     const [error, setError] = useState(null);
@@ -33,8 +32,8 @@ function Chat() {
     };
 
     useEffect(() => {
-        if (!currentConversation && conversations.length > 0) {
-            setCurrentConversation(conversations[conversations.length - 1]);
+        if (!chatReducer.currentConversation && conversations.length > 0) {
+            dispatch(setCurrentConversation(conversations[conversations.length - 1]));
         } else if (conversations.length === 0 && !loading) {
             handleNewConversation();
         }
@@ -51,7 +50,7 @@ function Chat() {
     const handleSend = async (message) => {
         setSending(true);
         setError(null);
-        if (!currentConversation) return;
+        if (!chatReducer.currentConversation) return;
         
         const newMessage = {
             message: message,
@@ -60,26 +59,28 @@ function Chat() {
             timestamp: new Date() 
         };
         
-        const updatedMessages = [...currentConversation.messages, newMessage];
+        const updatedMessages = [...chatReducer.currentConversation.messages, newMessage];
         
         const updatedConversation = { 
-            ...currentConversation, 
+            ...chatReducer.currentConversation, 
             messages: updatedMessages,
             updatedAt: new Date() 
         };
     
-        setCurrentConversation(updatedConversation);
+        await dispatch(setCurrentConversation(updatedConversation));
         
         await dispatch(updateConversation(updatedConversation));
         
         setTyping(true);
         
-        const initMessage = currentConversation.messages.length === 1 ? currentConversation.messages[0] : null;
+        const initMessage = chatReducer.currentConversation.messages.length === 1 ? chatReducer.currentConversation.messages[0] : null;
         
         try {
+            console.log("start try block");
+
             const resultAction = await dispatch(sendMessage({
                 user: session,
-                conversationId: currentConversation.conversationId,
+                conversationId: chatReducer.currentConversation.conversationId,
                 message: newMessage,
                 initMessage: initMessage
             }));
@@ -101,7 +102,7 @@ function Chat() {
                 updatedAt: new Date() 
             };
             
-            setCurrentConversation(finalConversation);
+            await dispatch(setCurrentConversation(finalConversation));
             
             await dispatch(updateConversation(finalConversation));
             
@@ -126,7 +127,7 @@ function Chat() {
         };
 
         dispatch(addConversation(newConversation));
-        setCurrentConversation(newConversation);
+        dispatch(setCurrentConversation(newConversation)); 
     };
 
     const memoizedgetConversations = useCallback(() => {
@@ -182,16 +183,16 @@ function Chat() {
                                     info={conversation.messages[conversation.messages.length - 1]?.timestamp?.toString().substring(0, 10) || 'No time'}
                                     lastSenderName={conversation.messages[conversation.messages.length - 1]?.sender || 'Unknown'}
                                     onClick={() => {
-                                        setCurrentConversation(conversation);
+                                        dispatch(setCurrentConversation(conversation)); 
                                     }}
-                                    className={conversation.conversationId === currentConversation?.conversationId ? 'cs-conversation current' : 'cs-conversation'}
+                                    className={conversation.conversationId === chatReducer.currentConversation?.conversationId ? 'cs-conversation current' : 'cs-conversation'}
                                 />
                             ))}
                         </ConversationList>
                     </div>
                     <ChatContainer>
                         <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>
-                            {currentConversation?.messages.map((message, i) => (
+                            {chatReducer.currentConversation?.messages.map((message, i) => (
                                 <Message key={i} model={message} />
                             ))}
                         </MessageList>
