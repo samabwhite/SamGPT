@@ -222,3 +222,4 @@ out/
 coverage/
 *.tsbuildinfo
 backend/src/config.js
+eslint.config.js
