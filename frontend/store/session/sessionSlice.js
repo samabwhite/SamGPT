@@ -39,7 +39,7 @@ export const sessionSlice = createSlice({
                 state.status = 'pending';
             })
             .addCase(logout.fulfilled, (state, action) => {
-                return {...initialState};
+                return { ...initialState };
             })
             .addCase(logout.rejected, (state, action) => {
                 state.status = 'failed';

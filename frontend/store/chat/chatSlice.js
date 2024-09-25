@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
     conversations: [],
@@ -57,7 +57,7 @@ export const chatSlice = createSlice({
                 state.error = action.error.message ?? 'Unknown Error';
             })
     }
-}); 
+});
 
 
 

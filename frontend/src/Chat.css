@@ -83,7 +83,7 @@ main {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
-    text-align: right; 
+    text-align: right;
 }
 
 .chat-container {
@@ -109,7 +109,7 @@ main {
     flex-grow: 1;
     border-top-style: solid;
     border-width: 1px;
-    border-color: #292929; 
+    border-color: #292929;
 }
 
 .cs-message-list {
@@ -285,11 +285,11 @@ body {
     cursor: pointer;
     padding: 0.5rem;
     margin: 0.5rem;
-    width: 40px; 
+    width: 40px;
     height: 40px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .collapse-button:hover,
@@ -325,7 +325,7 @@ body {
     align-items: center;
     z-index: 1000;
 }
-  
+
 .popup {
     background-color: #ffffff;
     padding: 2rem;
@@ -335,19 +335,19 @@ body {
     width: 100%;
     text-align: center;
 }
-  
+
 .popup h2 {
     margin-bottom: 1rem;
     font-size: 1.75rem;
     color: #333333;
 }
-  
+
 .popup p {
     margin-bottom: 1.5rem;
     font-size: 1rem;
     color: #666666;
 }
-  
+
 .close-popup-button {
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
@@ -358,7 +358,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-  
+
 .close-popup-button:hover {
     background-color: #723ec6;
 }
@@ -370,11 +370,11 @@ body {
     }
 
     .github-link {
-        transform: translateX(-1rem) translateY(-50%); 
+        transform: translateX(-1rem) translateY(-50%);
     }
 
     .logout-button {
-        left: 0.5rem; 
+        left: 0.5rem;
     }
 
     .logo {
@@ -382,7 +382,7 @@ body {
     }
 
     .github-logo {
-        height: 24px; 
+        height: 24px;
     }
 
     .collapsed {
@@ -391,7 +391,7 @@ body {
 
     .collapse-button,
     .new-conversation-button {
-        width: 35px; 
+        width: 35px;
         height: 35px;
         margin-right: 0;
     }
@@ -399,11 +399,11 @@ body {
     .sp-icon-open,
     .sp-icon-close,
     .material-icons {
-        font-size: 20px; 
+        font-size: 20px;
     }
 
     .cs-message {
         width: 90%;
     }
-    
+
 }

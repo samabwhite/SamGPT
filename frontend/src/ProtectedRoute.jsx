@@ -2,41 +2,41 @@ import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getSession, logout } from "../store/session/sessionSlice.js";
-import Loading from './Loading.jsx'; 
+import Loading from './Loading.jsx';
 
 const ProtectedRoute = ({ element }) => {
-  const dispatch = useDispatch();
-  const session = useSelector((state) => state.sessionReducer);
-  const [loading, setLoading] = useState(true);
+	const dispatch = useDispatch();
+	const session = useSelector((state) => state.sessionReducer);
+	const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchSession() {
-      await dispatch(getSession());
-      setLoading(false);
-    };
+	useEffect(() => {
+		async function fetchSession() {
+			await dispatch(getSession());
+			setLoading(false);
+		};
 
-    fetchSession();
-  }, [dispatch]);
+		fetchSession();
+	}, [dispatch]);
 
-  useEffect(() => {
-    async function checkLogout() {
-      if (!loading && !session.userId) {
-        await dispatch(logout());
-      }
-    }
-    
-    checkLogout();
-  }, [dispatch, loading, session.userId]);
+	useEffect(() => {
+		async function checkLogout() {
+			if (!loading && !session.userId) {
+				await dispatch(logout());
+			}
+		}
 
-  if (loading) {
-    return <Loading />; 
-  }
+		checkLogout();
+	}, [dispatch, loading, session.userId]);
 
-  if (!session.userId) {
-    return <Navigate to="/signin" replace />;
-  }
+	if (loading) {
+		return <Loading />;
+	}
 
-  return element;
+	if (!session.userId) {
+		return <Navigate to="/signin" replace />;
+	}
+
+	return element;
 };
 
 export default ProtectedRoute;

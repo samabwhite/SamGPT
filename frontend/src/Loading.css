@@ -11,7 +11,7 @@
 }
 
 .loading-logo {
-    width: 120px; 
+    width: 120px;
     height: auto;
     animation: spinlogo 2s linear infinite;
 }
@@ -20,7 +20,8 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
-        transform: rotate(359deg); 
+        transform: rotate(359deg);
     }
 }

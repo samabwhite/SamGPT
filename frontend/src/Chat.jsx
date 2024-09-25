@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { unwrapResult } from '@reduxjs/toolkit';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import './Chat.css';
 import logo from './assets/logo.png';
 import githubLogo from './assets/github.png';
-
 import { logout } from "../store/session/sessionSlice.js";
 import { getConversations, sendMessage, addConversation, updateConversation, setCurrentConversation } from '../store/chat/chatSlice.js';
-
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -18,7 +16,7 @@ function Chat() {
     const conversations = useSelector((state) => state.chatReducer.conversations);
     const sessionReducer = useSelector((state) => state.sessionReducer);
     const chatReducer = useSelector((state) => state.chatReducer);
-    const session = { userId : sessionReducer.userId, username: sessionReducer.username }
+    const session = { userId: sessionReducer.userId, username: sessionReducer.username }
 
     const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
@@ -51,17 +49,17 @@ function Chat() {
             message: message,
             sender: sender,
             direction: direction,
-            timestamp: new Date() 
+            timestamp: new Date()
         };
 
         const updatedMessages = [...currentConversation.messages, newMessage];
-            
-        const updatedConversation = { 
-            ...currentConversation, 
+
+        const updatedConversation = {
+            ...currentConversation,
             messages: updatedMessages,
-            updatedAt: new Date() 
+            updatedAt: new Date()
         };
-        
+
         dispatch(setCurrentConversation(updatedConversation));
         dispatch(updateConversation(updatedConversation));
 
@@ -73,20 +71,20 @@ function Chat() {
             setTyping(true);
             setError(null);
             if (!chatReducer.currentConversation) return;
-            
+
             const updatedConversation = addMessage(message, "user", "outgoing", chatReducer.currentConversation);
 
             const initMessage = updatedConversation.messages.length === 1 ? updatedConversation.messages[0] : null;
-            
+
             const resultAction = await dispatch(sendMessage({
                 user: session,
                 conversationId: chatReducer.currentConversation.conversationId,
-                message: updatedConversation.messages[updatedConversation.messages.length-1],
+                message: updatedConversation.messages[updatedConversation.messages.length - 1],
                 initMessage: initMessage
             }));
-            
+
             const result = unwrapResult(resultAction);
-            
+
             addMessage(result.message, "SamGPT", "incoming", updatedConversation);
         } catch (error) {
             console.error("Error sending message:", error);
@@ -94,10 +92,10 @@ function Chat() {
             setTyping(false);
         }
     };
-    
+
 
     const handleNewConversation = () => {
-        const newConversationId = conversations.length + 1; 
+        const newConversationId = conversations.length + 1;
         const newConversation = {
             conversationId: newConversationId,
             messages: [{
@@ -108,19 +106,19 @@ function Chat() {
         };
 
         dispatch(addConversation(newConversation));
-        dispatch(setCurrentConversation(newConversation)); 
+        dispatch(setCurrentConversation(newConversation));
     };
 
-        useEffect(() => {
-            const fetchConversations = async () => {
-                if (session.userId) {
-                    await dispatch(getConversations());
-                    setLoading(false);
-                }
-            };
-            fetchConversations();
-        }, [session.userId, dispatch]);
-    
+    useEffect(() => {
+        const fetchConversations = async () => {
+            if (session.userId) {
+                await dispatch(getConversations());
+                setLoading(false);
+            }
+        };
+        fetchConversations();
+    }, [session.userId, dispatch]);
+
 
     return (
         <div className="Chat">
@@ -163,7 +161,7 @@ function Chat() {
                                     info={conversation.messages[conversation.messages.length - 1]?.timestamp?.toString().substring(0, 10) || 'No time'}
                                     lastSenderName={conversation.messages[conversation.messages.length - 1]?.sender || 'Unknown'}
                                     onClick={() => {
-                                        dispatch(setCurrentConversation(conversation)); 
+                                        dispatch(setCurrentConversation(conversation));
                                     }}
                                     className={conversation.conversationId === chatReducer.currentConversation?.conversationId ? 'cs-conversation current' : 'cs-conversation'}
                                 />
@@ -176,10 +174,10 @@ function Chat() {
                                 <Message key={i} model={message} />
                             ))}
                         </MessageList>
-                        <MessageInput placeholder={typing ? "Please wait for response..." : "Type message here"} onSend={handleSend} attachButton={false} disabled={typing}/>
+                        <MessageInput placeholder={typing ? "Please wait for response..." : "Type message here"} onSend={handleSend} attachButton={false} disabled={typing} />
                     </ChatContainer>
                 </MainContainer>
-                {error && <p className="chat-error">{error}</p>} 
+                {error && <p className="chat-error">{error}</p>}
             </div>
         </div>
     );

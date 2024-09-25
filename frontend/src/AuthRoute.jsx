@@ -4,18 +4,17 @@ import { useEffect } from "react";
 import { getSession } from "../store/session/sessionSlice.js";
 
 const AuthRoute = ({ element }) => {
-  const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.sessionReducer.userId);
+	const dispatch = useDispatch();
+	const loggedIn = useSelector((state) => state.sessionReducer.userId);
 
-  useEffect(() => {
-    async function fetchSession() {
-      await dispatch(getSession());
+	useEffect(() => {
+    	async function fetchSession() {
+      	await dispatch(getSession());
     }
-    
     fetchSession();
-  }, [dispatch]);
+}, [dispatch]);
 
-  return loggedIn ? <Navigate to="/chat" replace /> : element;
+	return loggedIn ? <Navigate to="/chat" replace /> : element;
 };
 
 export default AuthRoute;

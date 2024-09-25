@@ -1,6 +1,6 @@
 import React from 'react';
 import './Loading.css';
-import logo from './assets/favicon.png';  
+import logo from './assets/favicon.png';
 
 function Loading() {
     return (
