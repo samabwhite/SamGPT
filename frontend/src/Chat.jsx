@@ -126,7 +126,20 @@ function Chat() {
                 <div className="popup-overlay">
                     <div className="popup">
                         <h2>Welcome to SamGPT!</h2>
-                        <p>This project is a chat application that uses a Decoder-Only Transform GPT model hosted on AWS SageMaker. You can interact with the model by starting a conversation below. The model is designed to respond to your queries in a conversational manner.</p>
+                        <p>
+                            This is the home of my custom-made 10M parameter Decoder-Only Transformer GPT model, which I trained on my 2060 for roughly 12 hours. That’s just a fun way of saying I created an over-engineered Lorem Ipsum generator... but a pretty cool one. It's currently hosted on an AWS SageMaker endpoint, while the website itself is hosted on DigitalOcean. For more information, check out the GitHub repo&nbsp;
+                            <a href="https://github.com/samabwhite/SamGPT" target="_blank">here</a>!
+                        </p>
+                        <p>
+                            You can interact with the model by starting a conversation. The conversations will be saved to your account so you can come back to them later. Feel free to start new conversations if you want to keep things separate.
+                        </p>
+                        <p>
+                            Try your best not to overuse the poor thing since it is transferring my money into Jeff Bezos' pocket. Thanks!
+                        </p>
+                        <p>
+                            Let me know if you'd like any further adjustments!&nbsp;
+                            <a href="mailto:swhite75@asu.edu">Email me</a>.
+                        </p>
                         <button className="close-popup-button" onClick={handleClosePopup}>Close</button>
                     </div>
                 </div>

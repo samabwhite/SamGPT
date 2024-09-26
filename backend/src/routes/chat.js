@@ -85,7 +85,7 @@ chatRouter.post("", async (req, res) => {
                     message: modelMessage.message 
                 });
             } else {
-                    throw new Error("Unknown error occurred, please try again");
+                    throw new Error("Come back soon, the model is currently not running since it's outside of scheduled hours. It run's everyday from 9am-8pm EST.");
             }
         } else {
             throw new Error("Not logged in, can't add conversation history");
