@@ -127,7 +127,7 @@ function Chat() {
                     <div className="popup">
                         <h2>Welcome to SamGPT!</h2>
                         <p>
-                            This is the home of my custom-made 10M parameter Decoder-Only Transformer GPT model, which I trained on my 2060 for roughly 12 hours. That’s just a fun way of saying I created an over-engineered Lorem Ipsum generator... but a pretty cool one. It's currently hosted on an AWS SageMaker endpoint, while the website itself is hosted on DigitalOcean. For more information, check out the GitHub repo&nbsp;
+                            This is the home of my custom-made 10M parameter Decoder-Only Transformer GPT model, which I trained on my 2060 for roughly 12 hours. That’s just a fun way of saying I created an over-engineered Lorem Ipsum generator... but a pretty cool one. It's currently hosted on an AWS SageMaker endpoint, while the website itself is hosted on a DigitalOcean VPS Droplet. For more information, check out the GitHub repo&nbsp;
                             <a href="https://github.com/samabwhite/SamGPT" target="_blank">here</a>!
                         </p>
                         <p>
