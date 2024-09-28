@@ -7,16 +7,21 @@
 html,
 body,
 #root {
-    height: 100%;
-    width: 100%;
+    height: 100dvh !important;
+    width: 100% !important;
     margin: 0;
     font-family: 'Roboto', sans-serif;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    overflow-y: clip;
 }
 
 #root {
     display: flex;
     flex-direction: column;
     height: 100%;
+    align-items: stretch; /* Align items to start rather than center */
+    justify-content: flex-start; /* Content starts at the top */
 }
 
 .App {
@@ -44,6 +49,7 @@ main {
     flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow: auto;
 }
 
 .header {
@@ -92,7 +98,8 @@ main {
     flex-grow: 1;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
+    min-height: 0;
 }
 
 .cs-main-container {
@@ -101,6 +108,8 @@ main {
     flex-grow: 1;
     width: 100%;
     height: 100%;
+    overflow: auto;
+    border: 0px;
 }
 
 .cs-chat-container {
@@ -110,20 +119,18 @@ main {
     border-top-style: solid;
     border-width: 1px;
     border-color: #292929;
+    overflow: auto;
 }
 
 .cs-message-list {
     flex-grow: 1;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .cs-message-input {
     flex-shrink: 0;
     font-size: calc(0.8vw + 15px);
-}
-
-.cs-main-container {
-    border: 0px;
+    overflow: auto !important;
 }
 
 .cs-chat-container .cs-message-input {
@@ -165,7 +172,6 @@ main {
 .cs-message-list__typing-indicator-container div,
 .cs-button--send {
     color: #8C52FF;
-    /* font-size: 0.7vw; */
 }
 
 .cs-message-input__content-editor[data-placeholder]:empty::before {
@@ -259,7 +265,6 @@ body {
     flex-direction: column;
     transition: width 0.3s;
     width: 250px;
-    overflow: hidden;
     border-right-style: solid;
     border-top-style: solid;
     border-width: 1px;
@@ -306,7 +311,6 @@ body {
 
 .cs-conversation-list {
     flex-grow: 1;
-    overflow-y: auto;
 }
 
 .collapsed .cs-conversation-list {
@@ -404,6 +408,26 @@ body {
 
     .cs-message {
         width: 90%;
+    }
+
+    .cs-message,
+    .cs-message-input {
+        font-size: 17px;
+    }
+    
+    .popup {
+        width: 70%;
+    }
+
+    .popup h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #333333;
+    }
+    
+    .popup p {
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
     }
 
 }
