@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getSession, logout } from "../store/session/sessionSlice.js";
 import Loading from './Loading.jsx';
+import { getConversations } from '../store/chat/chatSlice.js';
 
 const ProtectedRoute = ({ element }) => {
 	const dispatch = useDispatch();

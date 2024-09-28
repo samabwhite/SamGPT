@@ -29,6 +29,14 @@ function Chat() {
     };
 
     useEffect(() => {
+        if (!chatReducer.currentConversation && conversations.length > 0) {
+            dispatch(setCurrentConversation(conversations[conversations.length - 1]));
+        } else if (conversations.length === 0 && !loading) {
+            handleNewConversation();
+        }
+    }, [conversations]);
+
+    useEffect(() => {
         setError(chatReducer.error);
     }, [chatReducer.error]);
 
@@ -85,7 +93,7 @@ function Chat() {
         }
     };
 
-
+// getting bug where the handle new conversation isnt accurately making a conversation id since the number of conversations is still loading in
     const handleNewConversation = () => {
         const newConversationId = conversations.length + 1;
         const newConversation = {
@@ -101,15 +109,16 @@ function Chat() {
         dispatch(setCurrentConversation(newConversation));
     };
 
+
     useEffect(() => {
         const fetchConversations = async () => {
             if (session.userId) {
-                await dispatch(getConversations());
-                setLoading(false);
+                await dispatch(getConversations()).then(() => {
+                    setLoading(false);
+                });
             }
         };
         fetchConversations();
-        handleNewConversation();
     }, [session.userId, dispatch]);
 
 
@@ -130,7 +139,7 @@ function Chat() {
                             Try your best not to overuse the poor thing since it is transferring my money into Jeff Bezos' pocket. Thanks!
                         </p>
                         <p>
-                            Let me know if you'd like any further adjustments!&nbsp;
+                            Let me know what you think!&nbsp;
                             <a href="mailto:swhite75@asu.edu">Email me</a>.
                         </p>
                         <button className="close-popup-button" onClick={handleClosePopup}>Close</button>
