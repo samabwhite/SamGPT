@@ -29,14 +29,6 @@ function Chat() {
     };
 
     useEffect(() => {
-        if (!chatReducer.currentConversation && conversations.length > 0) {
-            dispatch(setCurrentConversation(conversations[conversations.length - 1]));
-        } else if (conversations.length === 0 && !loading) {
-            handleNewConversation();
-        }
-    }, [conversations]);
-
-    useEffect(() => {
         setError(chatReducer.error);
     }, [chatReducer.error]);
 
@@ -74,7 +66,7 @@ function Chat() {
 
             const updatedConversation = addMessage(message, "user", "outgoing", chatReducer.currentConversation);
 
-            const initMessage = updatedConversation.messages.length === 1 ? updatedConversation.messages[0] : null;
+            const initMessage = updatedConversation.messages.length === 2 ? updatedConversation.messages[0] : null;
 
             const resultAction = await dispatch(sendMessage({
                 user: session,
@@ -117,6 +109,7 @@ function Chat() {
             }
         };
         fetchConversations();
+        handleNewConversation();
     }, [session.userId, dispatch]);
 
 

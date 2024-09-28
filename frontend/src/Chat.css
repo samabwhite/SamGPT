@@ -20,8 +20,8 @@ body,
     display: flex;
     flex-direction: column;
     height: 100%;
-    align-items: stretch; /* Align items to start rather than center */
-    justify-content: flex-start; /* Content starts at the top */
+    align-items: stretch; 
+    justify-content: flex-start;
 }
 
 .App {
