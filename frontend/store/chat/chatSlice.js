@@ -36,6 +36,7 @@ export const chatSlice = createSlice({
             .addCase(getConversations.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.conversations = action.payload.conversations;
+                state.currentConversation = action.payload.conversations[action.payload.conversations.length];
                 state.error = null;
             })
             .addCase(getConversations.rejected, (state, action) => {

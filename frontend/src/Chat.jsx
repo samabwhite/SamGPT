@@ -34,7 +34,7 @@ function Chat() {
         } else if (conversations.length === 0 && !loading) {
             handleNewConversation();
         }
-    }, [conversations]);
+    }, [conversations, loading]);
 
     useEffect(() => {
         setError(chatReducer.error);
@@ -93,13 +93,12 @@ function Chat() {
         }
     };
 
-// getting bug where the handle new conversation isnt accurately making a conversation id since the number of conversations is still loading in
     const handleNewConversation = () => {
         const newConversationId = conversations.length + 1;
         const newConversation = {
             conversationId: newConversationId,
             messages: [{
-                message: "Hi, I'm SamGPT! Start a conversation.",
+                message: "Hi, I'm SamGPT! Start a conversation. \nI may take up to 30 seconds to respond!",
                 sender: "SamGPT",
                 direction: "incoming"
             }]
@@ -108,7 +107,6 @@ function Chat() {
         dispatch(addConversation(newConversation));
         dispatch(setCurrentConversation(newConversation));
     };
-
 
     useEffect(() => {
         const fetchConversations = async () => {
@@ -168,7 +166,7 @@ function Chat() {
                                 )}
                             </button>
                         </div>
-                        <ConversationList className="cs-conversation-list">
+                        {loading ? (<p>Loading conversations...</p>) : (<ConversationList className="cs-conversation-list">
                             {[...conversations].reverse().map((conversation, index) => (
                                 <Conversation
                                     key={index}
@@ -181,7 +179,7 @@ function Chat() {
                                     className={conversation.conversationId === chatReducer.currentConversation?.conversationId ? 'cs-conversation current' : 'cs-conversation'}
                                 />
                             ))}
-                        </ConversationList>
+                        </ConversationList>)}
                     </div>
                     <ChatContainer>
                         <MessageList typingIndicator={typing ? <TypingIndicator content="SamGPT is typing..." /> : null}>

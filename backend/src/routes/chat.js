@@ -85,7 +85,8 @@ chatRouter.post("", async (req, res) => {
                     message: modelMessage.message 
                 });
             } else {
-                    throw new Error("Come back soon, the model is currently not running since it's outside of scheduled hours. It run's everyday from 9am-8pm EST.");
+                console.log(data);
+                throw new Error("The model is currently not running since it's outside of scheduled hours. It usually run's weekdays from 9am-8pm EST.");
             }
         } else {
             throw new Error("Not logged in, can't add conversation history");
