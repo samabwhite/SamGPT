@@ -52,6 +52,8 @@ The Decoder-Only Transformer model was chosen because it's specifically optimize
 - MongoDB is used to store user information, session data, and conversation history.
 - Schema definitions include user data (username, encrypted password), and chat logs (user messages, model responses, timestamps).
 
+![samgptgif](https://i.imgur.com/VrRXbKh.gif)
+
 #### Frontend Implementation:
 - #### UI Design:
     - CSS and third-party libraries (e.g., @chatscope/chat-ui-kit-react) were used for a clean, interactive design.
